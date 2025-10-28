@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: guli-coupon
+  cloud:
+    nacos:
+      discovery:
+        namespace: 9a9e0fdc-ce37-451b-b2e3-f478eb6bfb36
+        group: dev
+        server-addr: 101.35.25.41:8849
+      config:
+        server-addr: 101.35.25.41:8849
+        file-extension: yml
+        namespace: 9a9e0fdc-ce37-451b-b2e3-f478eb6bfb36
+        group: dev
+        extension-configs:
+          - data-id: coupon-datasource.yml
+            group: dev
+            refresh: true
+          - data-id: coupon-mybatis.yml
+            group: dev
+            refresh: true
+          - data-id: coupon-port.yml
+            group: dev
+            refresh: true

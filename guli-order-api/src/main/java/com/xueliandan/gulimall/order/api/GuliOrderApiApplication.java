@@ -1,0 +1,13 @@
+package com.xueliandan.gulimall.order.api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class GuliOrderApiApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(GuliOrderApiApplication.class, args);
+    }
+
+}

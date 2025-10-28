@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: guli-third-party
+  cloud:
+    nacos:
+      discovery:
+        namespace: 9a9e0fdc-ce37-451b-b2e3-f478eb6bfb36
+        group: dev
+        server-addr: 101.35.25.41:8849
+      config:
+        group: dev
+        server-addr: 101.35.25.41:8849
+        file-extension: yml
+        namespace: 9a9e0fdc-ce37-451b-b2e3-f478eb6bfb36
+        extension-configs:
+          - data-id: third-party-port.yml
+            group: dev
+            refresh: true
+alibaba:
+  cloud:
+    access-key: LTAI5t8QdTduJMB1MXUXC4W6
+    secret-key: mC2cDzEl615aVpelWJ1wJGaZti8o70
+    oss:
+      endpoint: https://oss-cn-hangzhou.aliyuncs.com
+      # 自己定义属性，配置类里没有没关系，能拿到就行
+      bucket-name: edu-zxb-hangzhou
+      region: cn-hangzhou

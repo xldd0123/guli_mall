@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xueliandan.gulimall.product.dao.PmsAttrAttrgroupRelationDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.xueliandan.gulimall.product.entity.PmsAttrAttrgroupRelationEntity" id="pmsAttrAttrgroupRelationMap">
+        <result property="id" column="id"/>
+        <result property="attrId" column="attr_id"/>
+        <result property="attrGroupId" column="attr_group_id"/>
+        <result property="attrSort" column="attr_sort"/>
+    </resultMap>
+
+    <delete id="deleteByAttrGroupIdAndAttrId">
+        delete
+        from pms_attr_attrgroup_relation
+        where attr_group_id = #{attrGroupId}
+          and attr_id = #{attrId}
+    </delete>
+
+
+    <select id="selectByAttrId"
+            resultType="com.xueliandan.gulimall.product.entity.PmsAttrAttrgroupRelationEntity">
+        select *
+        from pms_attr_attrgroup_relation
+        where attr_id = #{attrId}
+    </select>
+    <select id="selectByAttrGroupId"
+            resultType="com.xueliandan.gulimall.product.entity.PmsAttrAttrgroupRelationEntity">
+        select *
+        from pms_attr_attrgroup_relation
+        where attr_group_id = #{attrGroupId}
+    </select>
+
+
+</mapper>
