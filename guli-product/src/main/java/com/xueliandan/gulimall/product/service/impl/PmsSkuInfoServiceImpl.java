@@ -11,6 +11,7 @@ import com.xueliandan.gulimall.product.service.PmsSkuInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -59,6 +60,12 @@ public class PmsSkuInfoServiceImpl extends ServiceImpl<PmsSkuInfoDao, PmsSkuInfo
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<PmsSkuInfoEntity> selectBySpuId(Long spuId) {
+        if (null == spuId) throw new IllegalArgumentException("spuId 不能为空!");
+        return this.list(new QueryWrapper<PmsSkuInfoEntity>().eq("spu_id", spuId));
     }
 
 }

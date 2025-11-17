@@ -25,6 +25,8 @@
         <module>renren-fast</module>
         <module>renren-generator</module>
         <module>guli-third-party</module>
+        <module>guli-search</module>
+        <module>guli-search-api</module>
     </modules>
 
     <properties>
@@ -66,6 +68,22 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- 由于 spring-boot-dependencies:2.3.12.RELEASE 中管理了 elasticsearch 的版本
+                          但是和本项目中 es 的版本不同, 本项目 es 版本 7.4.2。 并且根项目还不是通过 parent 标签继承的，
+                          而是使用 import 进行管理的。因此这里要手动导入 gav，这样就优先使用指定的 elasticsearch 的版本了
+                          使用 properties 改写的方式就不行了。-->
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>7.4.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-client</artifactId>
+                <version>7.4.2</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

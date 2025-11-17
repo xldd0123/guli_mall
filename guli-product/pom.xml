@@ -20,7 +20,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>com.xueliandan.gulimall</groupId>
             <artifactId>guli-coupon-api</artifactId>
@@ -61,7 +60,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.xueliandan.gulimall.GuliProductApplication</mainClass>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>

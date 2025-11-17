@@ -56,7 +56,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.xueliandan.gulimall.order.GuliOrderApplication</mainClass>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>

@@ -25,6 +25,17 @@ public class PmsSpuInfoController {
     @Autowired
     private PmsSpuInfoService pmsSpuInfoService;
 
+
+    /**
+     * SPU 上架功能。
+     * 只有上架了的 SPU 才能被全文检索
+     */
+    @PostMapping(path = "/{spuId}/up")
+    public R spuUp(@PathVariable(name = "spuId") Long spuId) {
+        pmsSpuInfoService.spuUp(spuId);
+        return R.ok();
+    }
+
     /**
      * 列表
      */

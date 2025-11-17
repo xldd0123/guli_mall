@@ -63,7 +63,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.xueliandan.gulimall.ware.GuliWareApplication</mainClass>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>

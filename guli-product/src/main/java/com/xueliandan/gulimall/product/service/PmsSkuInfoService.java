@@ -5,6 +5,7 @@ import com.xueliandan.gulimall.common.utils.PageUtils;
 import com.xueliandan.gulimall.product.entity.PmsSkuInfoEntity;
 import com.xueliandan.gulimall.product.entity.vo.SkuVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,5 +18,7 @@ import java.util.Map;
 public interface PmsSkuInfoService extends IService<PmsSkuInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<PmsSkuInfoEntity> selectBySpuId(Long spuId);
 }
 

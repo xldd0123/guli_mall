@@ -301,4 +301,12 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
         }
     }
 
+    @Override
+    public void spuUp(Long spuId) {
+        // 一个 spu 下有很多 sku，所以一次上架会上架多个 sku
+        List<PmsSkuInfoEntity> skuInfoEntities = pmsSkuInfoService.selectBySpuId(spuId);
+
+
+    }
+
 }

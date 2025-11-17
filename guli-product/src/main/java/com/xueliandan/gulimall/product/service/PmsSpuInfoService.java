@@ -31,5 +31,7 @@ public interface PmsSpuInfoService extends IService<PmsSpuInfoEntity> {
     void saveSpuImages(List<PmsSpuImagesEntity> pmsSpuImagesEntities);
 
     void saveSpuBaseAttrs(List<PmsProductAttrValueEntity> pmsProductAttrValueEntities);
+
+    void spuUp(Long spuId);
 }
 
