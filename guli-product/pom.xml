@@ -33,10 +33,20 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-
+        <!-- api 层 -->
         <dependency>
             <groupId>com.xueliandan.gulimall</groupId>
             <artifactId>guli-product-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xueliandan.gulimall</groupId>
+            <artifactId>guli-search-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xueliandan.gulimall</groupId>
+            <artifactId>guli-ware-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

@@ -18,6 +18,9 @@ import com.xueliandan.gulimall.product.entity.*;
 import com.xueliandan.gulimall.product.entity.vo.*;
 import com.xueliandan.gulimall.product.service.PmsSkuInfoService;
 import com.xueliandan.gulimall.product.service.PmsSpuInfoService;
+import com.xueliandan.gulimall.search.api.model.EsAttrModel;
+import com.xueliandan.gulimall.search.api.model.EsSkuModel;
+import com.xueliandan.gulimall.ware.api.feign.WareSkuFeignApi;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @Service("pmsSpuInfoService")
@@ -45,6 +50,10 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
     private PmsSkuImagesDao pmsSkuImagesDao;
     @Autowired
     private PmsSkuSaleAttrValueDao pmsSkuSaleAttrValueDao;
+    @Autowired
+    private PmsBrandDao pmsBrandDao;
+    @Autowired
+    private PmsCategoryDao pmsCategoryDao;
 
     @Autowired
     private SkuLadderFeignApi skuLadderFeignApi;
@@ -57,6 +66,8 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
 
     @Autowired
     private PmsSkuInfoService pmsSkuInfoService;
+    @Autowired
+    private WareSkuFeignApi wareSkuFeignApi;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -305,8 +316,75 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
     public void spuUp(Long spuId) {
         // 一个 spu 下有很多 sku，所以一次上架会上架多个 sku
         List<PmsSkuInfoEntity> skuInfoEntities = pmsSkuInfoService.selectBySpuId(spuId);
+        if (CollectionUtils.isEmpty(skuInfoEntities)) return;
+
+        // 查询出所有的规格属性，另外，PMS_ATTR 表中有 search_type 为 0 的表示不能被检索出来的，就不要查出来了，仅查出来为 1 的即可。
+        // 所有 SKU 共用 SPU 的规格属性，因此不要在循环中查询，在外面查询一遍即可
+        List<PmsProductAttrValueEntity> attrValues = pmsProductAttrValueDao.selectList(new QueryWrapper<PmsProductAttrValueEntity>().eq("spu_id", spuId));
+        List<EsAttrModel> attrs = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(attrValues)) {
+            Map<Long, PmsProductAttrValueEntity> attrIdEntityMap = attrValues.stream().collect(Collectors.toMap(PmsProductAttrValueEntity::getAttrId, Function.identity()));
+            List<PmsAttrEntity> pmsAttrEntities = pmsAttrDao.selectByIds(attrIdEntityMap.keySet());
+            List<PmsProductAttrValueEntity> filterAttrValues = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(pmsAttrEntities)) {
+                pmsAttrEntities.forEach(pmsAttrEntity -> {
+                    if (Objects.equals(pmsAttrEntity.getSearchType(), 1)) {
+                        filterAttrValues.add(attrIdEntityMap.get(pmsAttrEntity.getAttrId()));
+                    }
+                });
+            }
+
+            attrs = filterAttrValues.stream().map(attrValue -> {
+                EsAttrModel attr = new EsAttrModel();
+                attr.setAttrId(attrValue.getAttrId());
+                attr.setAttrName(attrValue.getAttrName());
+                attr.setAttrValue(attrValue.getAttrValue());
+                return attr;
+            }).collect(Collectors.toList());
+        }
+
+        // 要上架的 ES SKU 模型
+        List<EsAttrModel> finalAttrs = attrs;
+        Map<String, Boolean> skuHasStockMap;
+        try {
+            skuHasStockMap = wareSkuFeignApi.skuHasStock(skuInfoEntities.stream().map(PmsSkuInfoEntity::getSkuId).collect(Collectors.toList()));
+        } catch (Exception e) {
+            log.error("远程调用库存服务异常", e);
+            // 调用失败后，库存都默认给 true
+            skuHasStockMap = skuInfoEntities.stream().collect(Collectors.toMap((entity -> entity.getSkuId().toString()), item -> true));
+        }
+        Map<String, Boolean> finalSkuHasStockMap = skuHasStockMap;
+        List<EsSkuModel> skuModels = skuInfoEntities.stream().map(skuInfoEntity -> {
+            EsSkuModel skuModel = new EsSkuModel();
+            skuModel.setSkuId(skuInfoEntity.getSkuId());
+            skuModel.setSpuId(skuInfoEntity.getSpuId());
+            skuModel.setSkuTitle(skuInfoEntity.getSkuTitle());
+            skuModel.setSkuPrice(skuInfoEntity.getPrice());
+            skuModel.setSkuImg(skuInfoEntity.getSkuDefaultImg());
+            skuModel.setSaleCount(skuInfoEntity.getSaleCount());
+
+            // 设置库存信息
+            skuModel.setHasStock(finalSkuHasStockMap.get(skuInfoEntity.getSkuId().toString()));
+
+            // 刚上架的商品，热度可以给 0。当然也有刚出的新品，要指定，那热度肯定要高。这里就给个0吧。
+            skuModel.setHotScore(0L);
+
+            Long brandId = skuInfoEntity.getBrandId();
+            PmsBrandEntity pmsBrand = pmsBrandDao.selectById(brandId);
+            skuModel.setBrandId(brandId);
+            skuModel.setBrandName(pmsBrand.getName());
+            skuModel.setBrandImg(pmsBrand.getLogo());
+
+            Long catalogId = skuInfoEntity.getCatalogId();
+            skuModel.setCatalogId(catalogId);
+            PmsCategoryEntity pmsCategoryEntity = pmsCategoryDao.selectById(catalogId);
+            skuModel.setCatalogName(pmsCategoryEntity.getName());
+            skuModel.setAttrs(finalAttrs);
+            return skuModel;
+        }).collect(Collectors.toList());
 
 
+        // 将数据发送给 ES 进行保存
     }
 
 }

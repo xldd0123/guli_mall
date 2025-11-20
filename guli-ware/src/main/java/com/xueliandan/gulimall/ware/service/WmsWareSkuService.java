@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xueliandan.gulimall.common.utils.PageUtils;
 import com.xueliandan.gulimall.ware.entity.WmsWareSkuEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,5 +19,7 @@ public interface WmsWareSkuService extends IService<WmsWareSkuEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void addStock(Long wareId, Long skuId, Integer skuNum);
+
+    Map<String, Boolean> skusHasStock(List<Long> skuIds);
 }
 
