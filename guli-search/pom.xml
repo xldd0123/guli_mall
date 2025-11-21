@@ -59,7 +59,12 @@
             </exclusions>
         </dependency>
 
-
+        <!-- api 层 -->
+        <dependency>
+            <groupId>com.xueliandan.gulimall</groupId>
+            <artifactId>guli-search-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 
