@@ -17,4 +17,12 @@
     </resultMap>
 
 
+    <update id="updateSpuPublishStatus">
+        UPDATE pms_spu_info
+        set PUBLISH_STATUS = #{publishStatus},
+            UPDATE_TIME    = now()
+        where id = #{spuId}
+    </update>
+
+
 </mapper>

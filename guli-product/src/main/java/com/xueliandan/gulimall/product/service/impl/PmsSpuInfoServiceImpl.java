@@ -3,6 +3,7 @@ package com.xueliandan.gulimall.product.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xueliandan.gulimall.common.enums.product.ProductPublisheStatusEnum;
 import com.xueliandan.gulimall.common.utils.PageUtils;
 import com.xueliandan.gulimall.common.utils.Query;
 import com.xueliandan.gulimall.coupon.api.dto.SkuFullReductionDTO;
@@ -18,6 +19,7 @@ import com.xueliandan.gulimall.product.entity.*;
 import com.xueliandan.gulimall.product.entity.vo.*;
 import com.xueliandan.gulimall.product.service.PmsSkuInfoService;
 import com.xueliandan.gulimall.product.service.PmsSpuInfoService;
+import com.xueliandan.gulimall.search.api.feign.EsModelSaveFeign;
 import com.xueliandan.gulimall.search.api.model.EsAttrModel;
 import com.xueliandan.gulimall.search.api.model.EsSkuModel;
 import com.xueliandan.gulimall.ware.api.feign.WareSkuFeignApi;
@@ -28,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -66,8 +69,12 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
 
     @Autowired
     private PmsSkuInfoService pmsSkuInfoService;
+
+
     @Autowired
     private WareSkuFeignApi wareSkuFeignApi;
+    @Autowired
+    private EsModelSaveFeign esModelSaveFeign;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -312,6 +319,11 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
         }
     }
 
+    /**
+     * TODO 接口幂等性
+     *
+     * @param spuId 商品 ID
+     */
     @Override
     public void spuUp(Long spuId) {
         // 一个 spu 下有很多 sku，所以一次上架会上架多个 sku
@@ -385,6 +397,17 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
 
 
         // 将数据发送给 ES 进行保存
+        try {
+            Boolean b = esModelSaveFeign.rpcBulkSaveProductModel(skuModels);
+            if (Boolean.TRUE.equals(b)) {
+                // 修改 spu 的上架状态为已发布
+                baseMapper.updateSpuPublishStatus(spuId, ProductPublisheStatusEnum.PUBLISHED.getCode());
+            } else {
+                // 重试机制？？？
+            }
+        } catch (IOException e) {
+            log.error("商品上架失败！", e);
+        }
     }
 
 }
