@@ -376,7 +376,7 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
             skuModel.setSaleCount(skuInfoEntity.getSaleCount());
 
             // 设置库存信息
-            skuModel.setHasStock(finalSkuHasStockMap.get(skuInfoEntity.getSkuId().toString()));
+            skuModel.setHasStock(finalSkuHasStockMap.getOrDefault(skuInfoEntity.getSkuId().toString(), false));
 
             // 刚上架的商品，热度可以给 0。当然也有刚出的新品，要指定，那热度肯定要高。这里就给个0吧。
             skuModel.setHotScore(0L);

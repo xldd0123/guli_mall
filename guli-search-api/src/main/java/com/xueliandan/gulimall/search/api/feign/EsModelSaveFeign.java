@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author zxb 2025/11/21 19:13
  */
-@FeignClient(name = "gulimall-search", contextId = "gulimall-search-EsModelSaveFeign")
+@FeignClient(name = "guli-search", contextId = "guli-search-EsModelSaveFeign")
 public interface EsModelSaveFeign {
 
     @PostMapping(path = "/rpc/es/product/bulk-save")
