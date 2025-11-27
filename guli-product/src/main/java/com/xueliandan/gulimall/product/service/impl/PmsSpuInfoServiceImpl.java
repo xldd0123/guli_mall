@@ -290,7 +290,6 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
         }
 
 
-        // 6.4 批量保存 SKU 的优惠、满减等信息 gulimall_sms -> sms_sku_ladder & sms_sku_full_reduction & sms_member_price
     }
 
     @Override

@@ -7,7 +7,7 @@ import lombok.Getter;
  */
 @Getter
 public enum ProductPublisheStatusEnum {
-    NEW(0, "新建"),
+    NEW(-1, "新建"),
     PUBLISHED(1, "已上架"),
     DOWN(2, "下架");
 
