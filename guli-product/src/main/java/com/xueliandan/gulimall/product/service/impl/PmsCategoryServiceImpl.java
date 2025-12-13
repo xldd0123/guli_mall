@@ -66,6 +66,14 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
         }
     }
 
+    @Override
+    public List<PmsCategoryEntity> findFirstLevelCategory() {
+        return baseMapper.selectList(new QueryWrapper<PmsCategoryEntity>().eq("cat_level", 1));
+    }
+
+
+
+
     /**
      * 这种方式递归构建树结构，频繁查库，效率低下!
      *

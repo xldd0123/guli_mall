@@ -30,5 +30,7 @@ public interface PmsCategoryService extends IService<PmsCategoryEntity> {
     void enrichCategoryPath(PmsAttrGroupEntity pmsAttrGroup);
 
     void doEnrichCategoryPath(Long categoryId, Stack<Long> stack);
+
+    List<PmsCategoryEntity> findFirstLevelCategory();
 }
 

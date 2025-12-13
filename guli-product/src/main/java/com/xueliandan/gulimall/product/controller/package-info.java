@@ -7,6 +7,8 @@
  * <p>
  * 属性 >> 分组 >> 分类 >> 品牌
  *
+ * 这个包下存的是 restController
+ *
  * @author zxb 2025/10/9 11:03
  */
 package com.xueliandan.gulimall.product.controller;
