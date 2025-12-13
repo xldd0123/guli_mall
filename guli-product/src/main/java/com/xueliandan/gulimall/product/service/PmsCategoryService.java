@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xueliandan.gulimall.common.utils.PageUtils;
 import com.xueliandan.gulimall.product.entity.PmsAttrGroupEntity;
 import com.xueliandan.gulimall.product.entity.PmsCategoryEntity;
+import com.xueliandan.gulimall.product.entity.vo.Catelog2Vo;
 
 import java.util.List;
 import java.util.Map;
@@ -32,5 +33,7 @@ public interface PmsCategoryService extends IService<PmsCategoryEntity> {
     void doEnrichCategoryPath(Long categoryId, Stack<Long> stack);
 
     List<PmsCategoryEntity> findFirstLevelCategory();
+
+    Map<String, List<Catelog2Vo>> getCatalogJson();
 }
 
