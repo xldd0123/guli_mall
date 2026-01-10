@@ -40,4 +40,10 @@ public class IndexController {
         return categoryService.getCatalogJson();
     }
 
+    @GetMapping(path = "/hi")
+    @ResponseBody
+    public String hi() {
+        return "hi";
+    }
+
 }
