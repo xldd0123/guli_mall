@@ -6,6 +6,7 @@ import com.xueliandan.gulimall.product.service.PmsCategoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -16,7 +17,9 @@ import java.util.Map;
  * @author zxb 2025/12/9 21:37
  */
 @Controller
+@RequestMapping(path = "/product")
 public class IndexController {
+
 
     @Resource
     private PmsCategoryService categoryService;

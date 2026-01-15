@@ -3,6 +3,7 @@ package com.xueliandan.gulimall.product.entity.vo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -10,6 +11,9 @@ import java.util.List;
  * @author zxb 2025/12/13 15:08
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Catelog2Vo {
 
     /**
@@ -33,6 +37,7 @@ public class Catelog2Vo {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
+    @ToString
     public static class Category3Vo {
 
         /**
