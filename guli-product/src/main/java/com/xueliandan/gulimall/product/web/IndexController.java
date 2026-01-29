@@ -17,7 +17,7 @@ import java.util.Map;
  * @author zxb 2025/12/9 21:37
  */
 @Controller
-@RequestMapping(path = "/product")
+@RequestMapping(path = "/")
 public class IndexController {
 
 
