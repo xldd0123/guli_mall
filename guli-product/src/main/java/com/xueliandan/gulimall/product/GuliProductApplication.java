@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 @EnableFeignClients({"com.xueliandan.gulimall.coupon.api.feign",
         "com.xueliandan.gulimall.ware.api.feign",
         "com.xueliandan.gulimall.search.api.feign"})
+@EnableCaching
 @RestController
 public class GuliProductApplication {
 

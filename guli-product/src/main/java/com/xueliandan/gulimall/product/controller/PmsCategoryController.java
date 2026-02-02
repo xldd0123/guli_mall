@@ -6,6 +6,8 @@ import com.xueliandan.gulimall.product.dao.PmsCategoryBrandRelationDao;
 import com.xueliandan.gulimall.product.entity.PmsCategoryEntity;
 import com.xueliandan.gulimall.product.service.PmsCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -83,6 +85,11 @@ public class PmsCategoryController {
     @PutMapping("/")
     @Transactional(rollbackFor = Exception.class)
     //@RequiresPermissions("product:pmscategory:update")
+    @Caching(evict = {
+            @CacheEvict(value = {"category"},key = "'category_1'"),
+            @CacheEvict(value = {"category"},key = "'allCatelog'")
+    })
+    //@CacheEvict(value = {"firstLevelCategory"}, allEntries = true)
     public R update(@RequestBody PmsCategoryEntity pmsCategory) {
         if (null == pmsCategory || pmsCategory.getCatId() == null) {
             throw new IllegalArgumentException("修改时主键不能为空!");

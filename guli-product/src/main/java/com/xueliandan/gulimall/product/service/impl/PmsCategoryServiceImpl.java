@@ -19,6 +19,7 @@ import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -97,13 +98,60 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
     }
 
     @Override
+    @Cacheable(value = {"category"}, key = "'category_1'", sync = true)
     public List<PmsCategoryEntity> findFirstLevelCategory() {
+        log.info("查询数据库获取所有一级分类");
         return baseMapper.selectList(new QueryWrapper<PmsCategoryEntity>().eq("cat_level", 1));
     }
 
-    // TODO 堆外内存溢出异常 OutOfDirectMemoryError
     @Override
+    @Cacheable(value = {"category"}, key = "'allCatelog'", sync = true)
     public Map<String, List<Catelog2Vo>> getCatalogJson() {
+
+        Map<String, List<Catelog2Vo>> retVal = new HashMap<>();
+        log.info("查询所有分类");
+        // 一级分类是key，然后二级分类是 List value
+        // 拿到一级分类
+        List<PmsCategoryEntity> allCategories = baseMapper.selectList(null);
+        List<PmsCategoryEntity> secondCateLogs = allCategories.stream()
+                .filter(category -> category.getCatLevel().equals(2)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(secondCateLogs)) return new HashMap<>();
+
+
+        List<PmsCategoryEntity> thirdCateLogs = allCategories.stream()
+                .filter(category -> category.getCatLevel().equals(3)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(thirdCateLogs)) return new HashMap<>();
+
+        Map<Long, List<PmsCategoryEntity>> firstCatlogMap = secondCateLogs.stream().collect(Collectors.groupingBy(PmsCategoryEntity::getParentCid));
+        Map<Long, List<PmsCategoryEntity>> secondCatlogMap = thirdCateLogs.stream().collect(Collectors.groupingBy(PmsCategoryEntity::getParentCid));
+        firstCatlogMap.forEach((catId, children) -> {
+            List<Catelog2Vo> catelog2Vos = children.stream().map(secondLevelCategory -> {
+                Catelog2Vo catelog2Vo = new Catelog2Vo();
+                catelog2Vo.setCatalog1Id(catId.toString());
+                catelog2Vo.setId(secondLevelCategory.getCatId().toString());
+                catelog2Vo.setName(secondLevelCategory.getName());
+
+                List<PmsCategoryEntity> thirdCatlogs = secondCatlogMap.get(secondLevelCategory.getCatId());
+                if (!CollectionUtils.isEmpty(thirdCatlogs)) {
+                    List<Catelog2Vo.Category3Vo> category3Vos =
+                            thirdCatlogs.stream().map(thirdLevelCategory -> {
+                                Catelog2Vo.Category3Vo category3Vo = new Catelog2Vo.Category3Vo();
+                                category3Vo.setCatalog2Id(secondLevelCategory.getCatId().toString());
+                                category3Vo.setId(thirdLevelCategory.getCatId().toString());
+                                category3Vo.setName(thirdLevelCategory.getName());
+                                return category3Vo;
+                            }).collect(Collectors.toList());
+                    catelog2Vo.setCatalog3List(category3Vos);
+                }
+                return catelog2Vo;
+            }).collect(Collectors.toList());
+            retVal.put(catId.toString(), catelog2Vos);
+        });
+        return retVal;
+    }
+
+    // TODO 堆外内存溢出异常 OutOfDirectMemoryError
+    public Map<String, List<Catelog2Vo>> getCatalogJsonManual() {
 
         // 一级分类是key，然后二级分类是 List value
         // 拿到一级分类

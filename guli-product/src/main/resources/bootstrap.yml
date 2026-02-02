@@ -1,6 +1,13 @@
 server:
   port: 7001
 spring:
+  cache:
+    type: redis
+    redis:
+      time-to-live: 120000
+      cache-null-values: true
+#      key-prefix: redis_key_  不指定 key-prefix，则默认就是 cache 的 value 作为前缀
+      use-key-prefix: true
   application:
     name: guli-product
   cloud:
