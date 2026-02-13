@@ -43,3 +43,8 @@ logging:
   level:
     com.xueliandan.gulimall.product.dao.PmsAttrGroupDao: error
     com.xueliandan.gulimall.product.dao.PmsSpuInfoDao: error
+
+# 设置 rpc 调用的超时时间，设置的长一些，不然 rpc 的时候一打断点就超时返回报错
+ribbon:
+  ConnectTimeout: 300000
+  ReadTimeout: 300000
