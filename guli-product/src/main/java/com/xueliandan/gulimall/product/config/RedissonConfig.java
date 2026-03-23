@@ -34,7 +34,7 @@ public class RedissonConfig {
         // use "redis+uds://" for Redis Unix Domain Socket (UDS) connection
         // use "redis://" for Redis connection
         // use "rediss://" for Redis SSL connection
-        config.useSingleServer().setAddress("redis://192.168.174.183:6379");
+        config.useSingleServer().setAddress("redis://192.168.87.183:6379");
         return Redisson.create(config);
     }
 }

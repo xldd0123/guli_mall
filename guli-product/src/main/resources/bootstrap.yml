@@ -15,9 +15,9 @@ spring:
       discovery:
         namespace: 9a9e0fdc-ce37-451b-b2e3-f478eb6bfb36
         group: dev
-        server-addr: 192.168.174.183:8848
+        server-addr: 192.168.87.183:8848
       config:
-        server-addr: 192.168.174.183:8848
+        server-addr: 192.168.87.183:8848
         file-extension: yml
         namespace: 9a9e0fdc-ce37-451b-b2e3-f478eb6bfb36
         group: dev
@@ -37,7 +37,7 @@ spring:
   thymeleaf:
     cache: false
   redis:
-    host: 192.168.174.183
+    host: 192.168.87.183
     port: 6379
 logging:
   level:
